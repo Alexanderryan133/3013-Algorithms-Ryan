@@ -35,6 +35,10 @@ private:
   int *A;           // pointer to array of int's
   int size;         // current max stack size
   int top;          // top of stack 
+  float tooFullThresh;
+  float tooEmptThresh;
+  float enlargeThresh;
+  float shrinkThresh;
 
 public:
  /**
@@ -53,6 +57,10 @@ public:
     size = 10;
     A = new int[size];
     top = -1;
+    tooFullThresh = 1;
+    tooEmptThresh = .15;
+    enlargeThresh = 2;
+    shrinkThresh = .5;
   }
 
  /**
@@ -71,6 +79,28 @@ public:
     size = s;
     A = new int[s];
     top = -1;
+  }
+
+   /**
+  * ArrayStack
+  * 
+  * Description:
+  *      Constructor 4 params for toofull tooEmpty enlarge and shrink
+  * 
+  * Params:
+  *     - int size
+  * 
+  * Returns:
+  *     - NULL
+  */
+  ArrayStack(float tooFull, float tooEmpty, float enlarge, float shrink){
+    size = 10;
+    A = new int[size];
+    top = -1;
+    tooFullThresh = tooFull;
+    tooEmptThresh = tooEmpty;
+    enlargeThresh = enlarge;
+    shrinkThresh = shrink;
   }
 
  /**
@@ -227,20 +257,30 @@ public:
 // MAIN DRIVER
 // Simple Array Based Stack Usage:
 int main() {
-  ArrayStack stack;
-  int r = 0;
-
-  for(int i=0;i<20;i++){
-    r = rand() % 100;
-    r = i+1;
-    if(!stack.Push(r)){
-      cout<<"Push failed"<<endl;
+float first, second, third, fourth;
+    cout << "Enter 0 for default threshold, or enter 4 params";
+    cin >> first;
+    if(first = 0) {
+        ArrayStack stack;
     }
-  }
+    else{
+        cin >> second >> third >> fourth;
+        ArrayStack(first, second, third, fourth);
+    }
+//   ArrayStack stack;
+//   int r = 0;
 
-  for(int i=0;i<7;i++){
-    stack.Pop();
-  }
+//   for(int i=0;i<20;i++){
+//     r = rand() % 100;
+//     r = i+1;
+//     if(!stack.Push(r)){
+//       cout<<"Push failed"<<endl;
+//     }
+//   }
 
-  stack.Print();
+//   for(int i=0;i<7;i++){
+//     stack.Pop();
+//   }
+
+//   stack.Print();
 }
