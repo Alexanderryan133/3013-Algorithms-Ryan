@@ -15,6 +15,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 
+
 using namespace std;
 
 /**
@@ -251,7 +252,7 @@ public:
   }
 
   int findPercent () {
-    int percent = (top / size) * 100;
+    int percent = (top / size);
   }
 
 };
