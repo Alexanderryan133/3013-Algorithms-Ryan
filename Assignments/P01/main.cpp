@@ -220,6 +220,10 @@ public:
 
   }
 
+  int findPercent () {
+    int percent = (top / size) * 100;
+  }
+
 };
 
 
