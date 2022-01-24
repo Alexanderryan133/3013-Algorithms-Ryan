@@ -210,8 +210,8 @@ public:
   *      [bool] ; success = true
   */
   bool Push(int x){
-    if(Full()){
-      Resize();
+    if(findPercent() >= getTooFullThresh()){
+      containerGrow();
     }
     if(!Full()){
       A[++top] = x;
@@ -235,7 +235,7 @@ public:
   * Returns:
   *      NULL
   */
-  void Resize(){
+  void containerGrow(){
     int newSize = size*2;       // double size of original
     int *B = new int[newSize];  // allocate new memory
 
@@ -251,8 +251,52 @@ public:
 
   }
 
-  int findPercent () {
-    int percent = (top / size);
+  void containerShrink(){
+
+  }
+
+  float findPercent () {
+    float percent = (top / size);
+  }
+
+  void checkResize(){
+
+  }
+
+  /**
+   *
+   * Getters
+   *  
+   */
+  float getTooFullThresh(){
+    return tooFullThresh;
+  }
+  float getTooEmptThresh(){
+    return tooEmptThresh;
+  }
+  float getEnlargeThresh(){
+    return enlargeThresh;
+  }
+  float getShrinkThresh(){
+    return shrinkThresh;
+  }
+
+  /**
+   *
+   * Setters
+   *  
+   */
+  void setTooFullThresh(float x){
+    tooFullThresh = x;
+  }
+  void setTooEmptThresh(float x){
+    tooEmptThresh = x;
+  }
+  void setEnlargeThresh(float x){
+    enlargeThresh = x;
+  }
+  void setShrinkThresh(float x){
+    shrinkThresh = x;
   }
 
 };
