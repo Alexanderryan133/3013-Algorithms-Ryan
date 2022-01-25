@@ -14,7 +14,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
-
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -209,19 +210,15 @@ public:
   * Returns:
   *      [bool] ; success = true
   */
-  bool Push(int x){
+  void push(int x){
     if(Full()){
       containerGrow();
     }
     if(!Full()){
       if(findPercent() >= getTooFullThresh()){
       A[++top] = x;
-      return true;
       }
     }
-    
-    return false;
-    
   }
 
  /**
@@ -241,7 +238,7 @@ public:
     int newSize = size*2;       // double size of original
     int *B = new int[newSize];  // allocate new memory
 
-    for(int i=0;i<size;i++){    // copy values to new array
+    for(int i=0;i<top;i++){    // copy values to new array
       B[i] = A[i];
     }
 
@@ -321,16 +318,30 @@ public:
 
 // MAIN DRIVER
 // Simple Array Based Stack Usage:
-int main() {
-float first, second, third, fourth;
-    cout << "Enter 0 for default threshold, or enter 4 params";
-    cin >> first;
-    if(first = 0) {
-        ArrayStack stack;
-    }
-    else{
-        cin >> second >> third >> fourth;
-        ArrayStack(first, second, third, fourth);
+int main(int argc, char **argv) {
+  int x;
+  float first, second, third, fourth;
+  string filename;
+    cout << "Enter 0 for default threshold, or enter 5 params\n";
+    cout << "filename toofull tooempty enlarge shrink";
+    ArrayStack stack;
+    //cin >> first;
+    // if(first = 0) {
+    //   ArrayStack stack;
+        
+    // }
+    // else{
+    //   cin >> second >> third >> fourth;
+    //   ArrayStack stack(first, second, third, fourth);
+    // }
+
+    ifstream fin;
+    fin.open("nums_test.dat");
+    while(!fin.eof()){
+      fin >> x;
+      if(x%2 == 0) {
+        stack.push(x);
+      }
     }
 //   ArrayStack stack;
 //   int r = 0;
