@@ -210,12 +210,14 @@ public:
   *      [bool] ; success = true
   */
   bool Push(int x){
-    if(findPercent() >= getTooFullThresh()){
+    if(Full()){
       containerGrow();
     }
     if(!Full()){
+      if(findPercent() >= getTooFullThresh()){
       A[++top] = x;
       return true;
+      }
     }
     
     return false;
@@ -252,10 +254,24 @@ public:
   }
 
   void containerShrink(){
+    int newSize = size/2;
+    if(newSize < 10){
+      newSize = 10;
+    }
+    int *B = new int[newSize];
 
+    for(int i=0; i < newSize; i++){
+      B[i] = A[i];
+    }
+
+    delete [] A;
+
+    size = newSize;
+
+    A = B;
   }
 
-  float findPercent () {
+  int findPercent () {
     float percent = (top / size);
   }
 
