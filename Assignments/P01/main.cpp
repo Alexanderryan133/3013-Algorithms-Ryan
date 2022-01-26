@@ -43,6 +43,7 @@ private:
   float shrinkThresh;
 
 public:
+  int resize;
  /**
   * ArrayStack
   * 
@@ -57,6 +58,7 @@ public:
   */
   ArrayStack(){
     size = 10;
+    resize = 0;
     A = new int[size];
     top = -1;
     tooFullThresh = 1;
@@ -170,13 +172,15 @@ public:
   * Returns:
   *      [int] top value if any
   */
-  int Pop(){
-    if(!Empty()){
-      return A[top--];
+  void pop(){
+    if(findPercent() < getShrinkThresh()){
+      containerShrink();
+      top--;
+      resize--;
     }
-
-    return -99; // some sentinel value
-                // not a good solution
+    else{
+      top--;
+    }
   }
 
  /**
@@ -191,7 +195,7 @@ public:
   * Returns:
   *      NULL
   */
-  void Print(){
+  void print(){
     for(int i=0;i<=top;i++){
       cout<<A[i]<<" ";
     }
@@ -211,13 +215,12 @@ public:
   *      [bool] ; success = true
   */
   void push(int x){
-    if(Full()){
+    if(findPercent() >= getTooFullThresh()){
       containerGrow();
-    }
-    if(!Full()){
-      if(findPercent() >= getTooFullThresh()){
       A[++top] = x;
-      }
+    }
+    else{
+      A[++top] = x;
     }
   }
 
@@ -247,7 +250,7 @@ public:
     size = newSize;             // save new size
 
     A = B;                      // reset array pointer
-
+    resize++;
   }
 
   void containerShrink(){
@@ -266,14 +269,11 @@ public:
     size = newSize;
 
     A = B;
+    resize++;
   }
 
   int findPercent () {
-    float percent = (top / size);
-  }
-
-  void checkResize(){
-
+    float percent = (top+1 / size);
   }
 
   /**
@@ -320,27 +320,28 @@ public:
 // Simple Array Based Stack Usage:
 int main(int argc, char **argv) {
   int x;
-  float first, second, third, fourth;
+  //float first, second, third, fourth;
   string filename;
+    ArrayStack *stack;
     cout << "Enter 0 for default threshold, or enter 5 params\n";
     cout << "filename toofull tooempty enlarge shrink";
-    ArrayStack stack;
-    //cin >> first;
-    // if(first = 0) {
-    //   ArrayStack stack;
-        
-    // }
-    // else{
-    //   cin >> second >> third >> fourth;
-    //   ArrayStack stack(first, second, third, fourth);
-    // }
+    //stack->setEnlargeThresh(stof(argv[2]));
+    if(stof(argv[0]) == 0) {
+      stack = new ArrayStack();
+    }
+    else{
+      stack = new ArrayStack(stof(argv[1]), stof(argv[2]), stof(argv[3]), stof(argv[4]));
+    }
 
     ifstream fin;
-    fin.open("nums_test.dat");
+    fin.open(argv[0]);
     while(!fin.eof()){
       fin >> x;
       if(x%2 == 0) {
-        stack.push(x);
+        stack->push(x);
+      }
+      else{
+        stack->pop();
       }
     }
 //   ArrayStack stack;
