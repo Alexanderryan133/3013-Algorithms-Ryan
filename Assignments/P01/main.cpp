@@ -35,15 +35,15 @@ using namespace std;
 class ArrayStack{
 private:
   int *A;           // pointer to array of int's
-  int size;         // current max stack size
-  int top;          // top of stack 
+  int size, top;         // current max stack size
+  static int maxSize;      
   float tooFullThresh;
   float tooEmptThresh;
   float enlargeThresh;
   float shrinkThresh;
 
 public:
-  int resize;
+  int resize, counter;
  /**
   * ArrayStack
   * 
@@ -61,6 +61,7 @@ public:
     resize = 0;
     A = new int[size];
     top = -1;
+    maxSize = 0;
     tooFullThresh = 1;
     tooEmptThresh = .15;
     enlargeThresh = 2;
@@ -99,8 +100,10 @@ public:
   */
   ArrayStack(float tooFull, float tooEmpty, float enlarge, float shrink){
     size = 10;
+    resize = 0;
     A = new int[size];
     top = -1;
+    maxSize = 0;
     tooFullThresh = tooFull;
     tooEmptThresh = tooEmpty;
     enlargeThresh = enlarge;
@@ -176,7 +179,6 @@ public:
     if(findPercent() < getShrinkThresh()){
       containerShrink();
       top--;
-      resize--;
     }
     else{
       top--;
@@ -248,7 +250,9 @@ public:
     delete [] A;                // delete old array
 
     size = newSize;             // save new size
-
+    if(size > maxSize) {
+      maxSize = size;
+    }
     A = B;                      // reset array pointer
     resize++;
   }
@@ -274,6 +278,19 @@ public:
 
   int findPercent () {
     float percent = (top+1 / size);
+  }
+
+  void showStats() {
+    cout << "###############################################\n";
+    cout << "Program 1 - Resizing the Stack\n";
+    cout << "CMPS 3013\n";
+    cout << "Alexander Ryan\n\n";
+
+    cout << "Config Params: \n";
+    cout << "   Full Threshold: " << tooFullThresh << endl;
+    cout << "   Shrink Threshold: " << tooEmptThresh << endl;
+    cout << "   Grow Ratio: " << enlargeThresh << endl;
+    cout << "   Shrink Ratio: " << shrinkThresh << endl;
   }
 
   /**
@@ -322,11 +339,11 @@ int main(int argc, char **argv) {
   int x;
   //float first, second, third, fourth;
   string filename;
-    ArrayStack *stack;
+  ArrayStack *stack;
     cout << "Enter 0 for default threshold, or enter 5 params\n";
     cout << "filename toofull tooempty enlarge shrink";
     //stack->setEnlargeThresh(stof(argv[2]));
-    if(stof(argv[0]) == 0) {
+  if(stof(argv[0]) == 0) {
       stack = new ArrayStack();
     }
     else{
@@ -343,7 +360,10 @@ int main(int argc, char **argv) {
       else{
         stack->pop();
       }
+      stack->counter++;
     }
+
+
 //   ArrayStack stack;
 //   int r = 0;
 
