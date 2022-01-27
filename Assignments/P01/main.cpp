@@ -34,20 +34,20 @@ using namespace std;
  */
 class ArrayStack{
 private:
-  int *A;           // pointer to array of int's
-  int size, top;         // current max stack size    
-  double tooFullThresh;
-  double tooEmptThresh;
-  double enlargeThresh;
-  double shrinkThresh;
+  int *A;                 // pointer to array of int's
+  int size, top;          // current size of the stack and the top of the stack    
+  double tooFullThresh;   // Threshold where the stack is too full
+  double tooEmptThresh;   // Threshold where the stack is too empty  
+  double enlargeThresh;   // The ratio that the stack grows by
+  double shrinkThresh;    // The ratio that the stack shrinks by
 
 public:
-  int resize, counter;int maxSize;  
+  int resize, counter, maxSize;  
  /**
   * ArrayStack
   * 
   * Description:
-  *      Constructor no params
+  *      Default constructor no params
   * 
   * Params:
   *     - None
@@ -67,24 +67,6 @@ public:
     shrinkThresh = .5;
   }
 
- /**
-  * ArrayStack
-  * 
-  * Description:
-  *      Constructor size param
-  * 
-  * Params:
-  *     - int size
-  * 
-  * Returns:
-  *     - NULL
-  */
-  ArrayStack(int s){
-    size = s;
-    A = new int[s];
-    top = -1;
-  }
-
    /**
   * ArrayStack
   * 
@@ -92,7 +74,10 @@ public:
   *      Constructor 4 params for toofull tooEmpty enlarge and shrink
   * 
   * Params:
-  *     - int size
+  *     - double tooFull - The percent at which the stack will grow
+  *     - double tooEmpty - The percent (In decimal form) that the stack will shrink
+  *     - double enlarge - The ratio that the stack will grow by
+  *     - double shrink - The ration that the stack will shrink by
   * 
   * Returns:
   *     - NULL
@@ -142,27 +127,6 @@ public:
   }
 
  /**
-  * Public int: Peek
-  * 
-  * Description:
-  *      Returns top value without altering the stack
-  * 
-  * Params:
-  *      NULL
-  * 
-  * Returns:
-  *      [int] top value if any
-  */
-  int Peek(){
-    if(!Empty()){
-      return A[top];
-    }
-    
-    return -99; // some sentinel value
-                // not a good solution
-  }
-
- /**
   * Public int: Pop
   * 
   * Description:
@@ -186,25 +150,6 @@ public:
   }
 
  /**
-  * Public void: Print
-  * 
-  * Description:
-  *      Prints stack to standard out
-  * 
-  * Params:
-  *      NULL
-  * 
-  * Returns:
-  *      NULL
-  */
-  void print(){
-    for(int i=0;i<=top;i++){
-      cout<<A[i]<<" ";
-    }
-    cout<<endl;
-  } 
-
- /**
   * Public bool: Push
   * 
   * Description:
@@ -225,12 +170,11 @@ public:
   }
 
  /**
-  * Public void: Resize
+  * Public void: containerGrow
   * 
   * Description:
-  *      Resizes the container for the stack by doubling
-  *      its capacity
-  * 
+  *      Resizes the container for the stack by enlargeThresh
+  *      
   * Params:
   *      NULL
   * 
@@ -255,13 +199,26 @@ public:
     resize++;
   }
 
+ /**
+  * Public void: containerShrink
+  * 
+  * Description:
+  *      Resizes the container for the stack by the shrinkThresh
+  *      its capacity
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      NULL
+  */
+
   void containerShrink(){
 
-    if(size <= 10){
+    if(size <= 10){                 //Maintains the stack is always size 10
       return;
-      // newSize = 10;
     }
-    int newSize = (double)size*(double)shrinkThresh;
+    int newSize = (double)size*(double)shrinkThresh;   //determine the new size
 
     int *B = new int[newSize];
 
@@ -277,13 +234,13 @@ public:
     resize++;
   }
 
-  double findPercent () {
-    //cout<<"top: "<<top<<" "<<"size: "<<size<<endl;
+  double findPercent () {     //Returns a decimal value based percent of 
+                              //how much of the stack is used
     double percent = ((double) top+1)  / (double) size;
     return percent;
   }
 
-  void showStats() {
+  void showStats() {  //Prints all important information to the console.
     cout << "###############################################\n";
     cout << "Program 1 - Resizing the Stack\n";
     cout << "CMPS 3013\n";
