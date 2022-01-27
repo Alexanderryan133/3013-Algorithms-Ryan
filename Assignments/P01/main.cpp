@@ -35,15 +35,14 @@ using namespace std;
 class ArrayStack{
 private:
   int *A;           // pointer to array of int's
-  int size, top;         // current max stack size
-  static int maxSize;      
-  float tooFullThresh;
-  float tooEmptThresh;
-  float enlargeThresh;
-  float shrinkThresh;
+  int size, top;         // current max stack size    
+  double tooFullThresh;
+  double tooEmptThresh;
+  double enlargeThresh;
+  double shrinkThresh;
 
 public:
-  int resize, counter;
+  int resize, counter;int maxSize;  
  /**
   * ArrayStack
   * 
@@ -98,7 +97,7 @@ public:
   * Returns:
   *     - NULL
   */
-  ArrayStack(float tooFull, float tooEmpty, float enlarge, float shrink){
+  ArrayStack(double tooFull, double tooEmpty, double enlarge, double shrink){
     size = 10;
     resize = 0;
     A = new int[size];
@@ -178,11 +177,12 @@ public:
   void pop(){
     if(findPercent() < getShrinkThresh()){
       containerShrink();
-      top--;
     }
-    else{
+    if(!Empty()){
       top--;
-    }
+      }else{
+      cout<<"Empty!!"<<endl;
+      }
   }
 
  /**
@@ -219,11 +219,9 @@ public:
   void push(int x){
     if(findPercent() >= getTooFullThresh()){
       containerGrow();
-      A[++top] = x;
     }
-    else{
-      A[++top] = x;
-    }
+    
+    A[++top] = x;
   }
 
  /**
@@ -240,7 +238,7 @@ public:
   *      NULL
   */
   void containerGrow(){
-    int newSize = size*2;       // double size of original
+    int newSize = size*enlargeThresh;       // double size of original
     int *B = new int[newSize];  // allocate new memory
 
     for(int i=0;i<top;i++){    // copy values to new array
@@ -258,10 +256,13 @@ public:
   }
 
   void containerShrink(){
-    int newSize = size/2;
-    if(newSize < 10){
-      newSize = 10;
+
+    if(size <= 10){
+      return;
+      // newSize = 10;
     }
+    int newSize = (double)size*(double)shrinkThresh;
+
     int *B = new int[newSize];
 
     for(int i=0; i < newSize; i++){
@@ -276,8 +277,10 @@ public:
     resize++;
   }
 
-  int findPercent () {
-    float percent = (top+1 / size);
+  double findPercent () {
+    //cout<<"top: "<<top<<" "<<"size: "<<size<<endl;
+    double percent = ((double) top+1)  / (double) size;
+    return percent;
   }
 
   void showStats() {
@@ -291,6 +294,14 @@ public:
     cout << "   Shrink Threshold: " << tooEmptThresh << endl;
     cout << "   Grow Ratio: " << enlargeThresh << endl;
     cout << "   Shrink Ratio: " << shrinkThresh << endl;
+
+    cout << "\nProcessed " << counter << " commands.\n\n";
+
+    cout << "Max Stack Size: " << maxSize << endl;
+    cout << "End Stack Size: " << size << endl;
+    cout << "Stack Resized: " << resize << " times \n\n";
+
+    cout << "###############################################\n";
   }
 
   /**
@@ -298,16 +309,16 @@ public:
    * Getters
    *  
    */
-  float getTooFullThresh(){
+  double getTooFullThresh(){
     return tooFullThresh;
   }
-  float getTooEmptThresh(){
+  double getTooEmptThresh(){
     return tooEmptThresh;
   }
-  float getEnlargeThresh(){
+  double getEnlargeThresh(){
     return enlargeThresh;
   }
-  float getShrinkThresh(){
+  double getShrinkThresh(){
     return shrinkThresh;
   }
 
@@ -316,16 +327,16 @@ public:
    * Setters
    *  
    */
-  void setTooFullThresh(float x){
+  void setTooFullThresh(double x){
     tooFullThresh = x;
   }
-  void setTooEmptThresh(float x){
+  void setTooEmptThresh(double x){
     tooEmptThresh = x;
   }
-  void setEnlargeThresh(float x){
+  void setEnlargeThresh(double x){
     enlargeThresh = x;
   }
-  void setShrinkThresh(float x){
+  void setShrinkThresh(double x){
     shrinkThresh = x;
   }
 
@@ -340,44 +351,30 @@ int main(int argc, char **argv) {
   //float first, second, third, fourth;
   string filename;
   ArrayStack *stack;
-    cout << "Enter 0 for default threshold, or enter 5 params\n";
-    cout << "filename toofull tooempty enlarge shrink";
+    // cout << "Enter 0 for default threshold, or enter 5 params\n";
+    // cout << "filename toofull tooempty enlarge shrink" << endl;
     //stack->setEnlargeThresh(stof(argv[2]));
-  if(stof(argv[0]) == 0) {
+  if(argc == 1) {
+      cout<<"argc == 1"<<endl;
       stack = new ArrayStack();
-    }
-    else{
-      stack = new ArrayStack(stof(argv[1]), stof(argv[2]), stof(argv[3]), stof(argv[4]));
+      filename = "nums_test.dat";
+    }else{
+      cout <<"overloaded" << endl;
+      filename = argv[1];
+      stack = new ArrayStack(stof(argv[2]), stof(argv[3]), stof(argv[4]), stof(argv[5]));
     }
 
     ifstream fin;
-    fin.open(argv[0]);
+    fin.open(filename);
     while(!fin.eof()){
       fin >> x;
       if(x%2 == 0) {
         stack->push(x);
-      }
-      else{
+      }else{
         stack->pop();
       }
       stack->counter++;
     }
 
-
-//   ArrayStack stack;
-//   int r = 0;
-
-//   for(int i=0;i<20;i++){
-//     r = rand() % 100;
-//     r = i+1;
-//     if(!stack.Push(r)){
-//       cout<<"Push failed"<<endl;
-//     }
-//   }
-
-//   for(int i=0;i<7;i++){
-//     stack.Pop();
-//   }
-
-//   stack.Print();
+    stack->showStats();
 }
